@@ -200,13 +200,14 @@ elif [ "$1" == "clean" ]; then
     fi
 elif [ "$1" == "diff" ]; then
     if [ ${#@} -lt 2 ]; then
-        echo "Insufficient arguments for this command. See \"upd help clean\"."
+        echo "Insufficient arguments for this command. See \"upd help diff\"."
     else
 		name=$(grep -w $2 .upd.conf | awk -F '->' '{ gsub(/ /,"", $1); print $1 }')
+		repo=$(grep -w $2 .upd.conf | awk -F '->' '{ gsub(/ /,"", $2); print $2 }')
 		if [ "$name" != "$2" ]; then
 			echo "$2 is not linked to any repository"
 		else
-			rsync -az --dry-run "$PWD/" $name
+			rsync -n -rin --exclude '.upd.*' "$PWD/" $repo
 		fi
 	fi
 else
