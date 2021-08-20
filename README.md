@@ -9,9 +9,10 @@ Available commands:
 - init
 - add
 - forget
-- sync
+- push
+- pull
 - diff
-- remove
+- clean
 - rename
 
 ## Workflow
@@ -38,14 +39,14 @@ $ upd rename previous_alias new_alias
 ```
 5. Synchronize your directory with backup destinations.
 ```bash
-$ upd sync
+$ upd push
 ```
 6. Alternatively do a dry-run to see differences. Only the pairs source/destination that show a difference will be listed. An empty output means no difference at all.
 ```bash
 $ upd diff
 ```
 ### Deleting a backup destination
-A destination can be forgot it (*upd* stops syncing to it) or, in addition, can be removed with option *remove*. The main difference between both commands is that *forget* will keep the files in the backup destination while *remove* will attempt to delete them if they are still accessible.
+A destination can be forgot it (*upd* stops syncing to it) or, in addition, can be removed with option *clean*. The main difference between both commands is that *forget* will keep the files in the backup destination while *clean* will attempt to delete them if they are still accessible.
 An alias for the destination has to be provided; more than one alias can be passed or the *all* reserved keyword may be passed in order to instruct **upd** to forget (or remove) all the destinations.
 ```bash
 $ upd forget local_backup
@@ -53,4 +54,4 @@ $ upd forget all
 $ upd remove remote_backup
 ```
 
-As removing files can be a dangerous option, **upd** will ask user confirmation to execute this operation. This test can be skip it by passing --force option after *remove*, although it's not recommended to prevent unconciously data lost.
+As removing files can be a dangerous option, **upd** will ask user confirmation to execute this operation. This test can be skip it by passing --force option after *clean*, although it's not recommended to prevent unconciously data lost.
