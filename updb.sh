@@ -111,11 +111,15 @@ elif [ "$1" == "forget" ]; then
     fi
 elif [ "$1" == "push" ]; then
     repos=( $(grep -w -v "origin" .updb.conf | awk -F '->' '{ gsub(/ /, "", $2); print $2 }') )
-    names=( $(grep -w -v "origin" .updb.conf | awk -F '->' '{ print $1 }') )
+	names=( $(grep -w -v "origin" .updb.conf | awk -F '->' '{ gsub(/ /, "", $1); print $1 }') )
     for i in ${!repos[@]};
     do
-        rsync -azh --delete "$PWD/" "${repos[$i]}"
-        printLog "origin was mirrored to ${names[$i]}." 
+		res=$(rsync -azh --delete "$PWD/" "${repos[$i]}" | wc -l)
+		if [ "$res" -gt 1 ]; then
+			printLog "origin was mirrored to ${names[$i]}." 
+		else
+			echo "Mirror ${names[$i]} (${repos[$i]}) is up to date. No sync needed."
+		fi
     done
 elif [ "$1" == "pull" ]; then
     if [ ${#@} -lt 2 ]; then
@@ -207,7 +211,7 @@ elif [ "$1" == "diff" ]; then
 		if [ "$name" != "$2" ]; then
 			echo "$2 is not linked to any repository"
 		else
-			rsync -n -rin --exclude '.upd.*' "$PWD/" $repo
+			rsync -n -rlin --exclude '.upd.*' "$PWD/" $repo
 		fi
 	fi
 else
