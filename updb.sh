@@ -130,8 +130,14 @@ elif [ "$1" == "pull" ]; then
         if [ -z "$repo" ]; then
             echo "$name is not registered as a backup destination. Skipping ..."
         else
-            rsync -azh --exclude '.updb.conf*' $repo "$PWD"
-            printLog "origin has been updated from $name repository." 
+			res=$(rsync -azh --exclude '.updb.conf*' $repo "$PWD" | wc -l)
+			if [ "$res" -gt 1 ]; then
+				printLog "origin has been updated from $name repository." 
+			else
+				echo "origin is up to date. Nothing to pull."
+			fi
+		fi
+
         fi
     fi
 elif [ "$1" == "edit" ]; then
