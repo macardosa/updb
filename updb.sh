@@ -114,7 +114,7 @@ elif [ "$1" == "push" ]; then
 	names=( $(grep -w -v "origin" .updb.conf | awk -F '->' '{ gsub(/ /, "", $1); print $1 }') )
     for i in ${!repos[@]};
     do
-		res=$(rsync -azh --delete "$PWD/" "${repos[$i]}" | wc -l)
+		res=$(rsync -azhP --delete "$PWD/" "${repos[$i]}" | wc -l)
 		if [ "$res" -gt 1 ]; then
 			printLog "origin was mirrored to ${names[$i]}." 
 		else
