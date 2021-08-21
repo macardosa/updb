@@ -49,6 +49,7 @@ $ updb diff alias
 ```
 **Note:** To guarantee the correct functioning of this script, configuration files are not pulled from a backup, although they will be push. So, you might see 
 listed in the output of *upd diff* command. Those files follows the pattern _.upd.conf*_ and should be ignored by the user.
+
 7. To pull from a repository rather than push, you use the command *pull* passing the alias of the backup destination to use.
 ```bash
 $ updb pull alias
