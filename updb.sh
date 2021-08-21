@@ -136,8 +136,6 @@ elif [ "$1" == "pull" ]; then
 			else
 				echo "origin is up to date. Nothing to pull."
 			fi
-		fi
-
         fi
     fi
 elif [ "$1" == "edit" ]; then
