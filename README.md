@@ -1,5 +1,6 @@
 # updb (update backup)
-Bash script interfacing [rsync](https://rsync.samba.org/) command line utility for maintaining a backup in a remote server.
+Bash script interfacing [rsync](https://rsync.samba.org/) command line utility for maintaining backups in remote or local destinations. The directory to be cloned
+is refered as *origin* and the user will provide an alias name to the backup destinations address, so it be easier and safer to achieve all the operations. 
 
 ## USAGE:
 ```bash
@@ -43,16 +44,13 @@ $ updb rename previous_alias new_alias
 ```bash
 $ updb push
 ```
-6. The diff command run a dry-run rsync instance to check differences between a backup and local repository. [More information](https://unix.stackexchange.com/questions/57305/rsync-compare-directories).
+6. The diff command run a dry-run rsync instance to check differences between a backup and local repository and vicevers. [More information](https://unix.stackexchange.com/questions/57305/rsync-compare-directories).
 ```bash
 $ updb diff alias
 ```
-**Note:** To guarantee the correct functioning of this script, configuration files are not pulled from a backup, although they will be push. So, you might see 
-listed in the output of *upd diff* command. Those files follows the pattern _.upd.conf*_ and should be ignored by the user.
-
-7. To pull from a repository rather than push, you use the command *pull* passing the alias of the backup destination to use.
+7. To pull from a repository rather than push, you use the command *pull* passing the alias of the backup destination to use. Alternatively, the option *--no-delete* witten after the alias tells the command to keep at **origin** the files that are not found at the repository. 
 ```bash
-$ updb pull alias
+$ updb pull alias [--no-delete]
 ```
 8. All the changes and operations are registered in a log file, which can be displayed by running command *log*.
 ```bash
