@@ -215,7 +215,10 @@ elif [ "$1" == "diff" ]; then
 		if [ "$name" != "$2" ]; then
 			echo "$2 is not linked to any repository"
 		else
-			rsync -n -rlin --exclude '.upd.*' "$PWD/" $repo
+			echo "------> DIFF origin TO $name <------"
+			rsync -n -rlin "$PWD/" $repo | grep -v ".updb.conf*"
+			echo "------> DIFF $name TO origin <------"
+			rsync -n -rlin $repo "$PWD" | grep -v ".updb.conf*"
 		fi
 	fi
 else
