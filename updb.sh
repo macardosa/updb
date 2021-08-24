@@ -130,7 +130,12 @@ elif [ "$1" == "pull" ]; then
         if [ -z "$repo" ]; then
             echo "$name is not registered as a backup destination. Skipping ..."
         else
-			res=$(rsync -azhP --exclude '.updb.conf*' $repo "$PWD" | wc -l)
+			if [ -n "$3" ] && [ "$3" == "--no-delete" ]; then 
+				res=$(rsync -azhP --exclude '.updb.conf*' $repo "$PWD" | wc -l)
+			else
+				res=$(rsync -azhP --delete --exclude '.updb.conf*' $repo "$PWD" | wc -l)
+			fi
+
 			if [ "$res" -gt 1 ]; then
 				printLog "origin has been updated from $name repository." 
 			else
