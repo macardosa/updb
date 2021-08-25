@@ -121,6 +121,24 @@ elif [ "$1" == "push" ]; then
 			echo "Mirror ${names[$i]} (${repos[$i]}) is up to date. No sync needed."
 		fi
     done
+elif [ "$1" == "fetch" ]; then
+    if [ ${#@} -lt 2 ]; then
+        echo "Insufficient arguments for this command. See \"upd help fetch\"."
+    else
+        name=$2
+        repo=$(grep -w $name .updb.conf | awk -F '->' '{ print $2 }')
+        if [ -z "$repo" ]; then
+            echo "$name is not registered as a backup destination. Skipping ..."
+        else
+			res=$(rsync -azhP --exclude '.updb.conf*' $repo "$PWD" | wc -l)
+
+			if [ "$res" -gt 1 ]; then
+				printLog "origin has been updated from $name repository." 
+			else
+				echo "origin is up to date. Nothing to pull."
+			fi
+        fi
+    fi
 elif [ "$1" == "pull" ]; then
     if [ ${#@} -lt 2 ]; then
         echo "Insufficient arguments for this command. See \"upd help pull\"."
@@ -130,11 +148,7 @@ elif [ "$1" == "pull" ]; then
         if [ -z "$repo" ]; then
             echo "$name is not registered as a backup destination. Skipping ..."
         else
-			if [ -n "$3" ] && [ "$3" == "--no-delete" ]; then 
-				res=$(rsync -azhP --exclude '.updb.conf*' $repo "$PWD" | wc -l)
-			else
-				res=$(rsync -azhP --delete --exclude '.updb.conf*' $repo "$PWD" | wc -l)
-			fi
+			res=$(rsync -azhP --delete --exclude '.updb.conf*' $repo "$PWD" | wc -l)
 
 			if [ "$res" -gt 1 ]; then
 				printLog "origin has been updated from $name repository." 

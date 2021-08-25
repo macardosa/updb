@@ -11,6 +11,7 @@ Available commands:
 - add
 - forget
 - push
+- fetch
 - pull
 - diff
 - clean
@@ -48,9 +49,12 @@ $ updb push
 ```bash
 $ updb diff alias
 ```
-7. To pull from a repository rather than push, you use the command *pull* passing the alias of the backup destination to use. Alternatively, the option *--no-delete* witten after the alias tells the command to keep at **origin** the files that are not found at the repository. 
+7. To pull from a repository rather than push to it, you can use the commands *pull* and *fetch* passing the alias of the backup destination to use. The main difference is that with fetch the files contained in
+in local directory but not in the backup will be keep, while command pull will delete them to ensure both
+locations don't differ.
 ```bash
-$ updb pull alias [--no-delete]
+$ updb fetch alias 
+$ updb pull alias 
 ```
 8. All the changes and operations are registered in a log file, which can be displayed by running command *log*.
 ```bash
