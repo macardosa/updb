@@ -235,9 +235,9 @@ elif [ "$1" == "diff" ]; then
 			echo "$2 is not linked to any repository"
 		else
 			echo "------> DIFF origin TO $name <------"
-			rsync -n -rlin "$PWD/" $repo | grep -v ".updb.conf*"
+			rsync -n -rlin "$PWD/" $repo | grep -v ".updb.conf*\|.DS_Store"
 			echo "------> DIFF $name TO origin <------"
-			rsync -n -rlin $repo "$PWD" | grep -v ".updb.conf*"
+			rsync -n -rlin $repo "$PWD" | grep -v ".updb.conf*\|.DS_Store"
 		fi
 	fi
 else
