@@ -7,31 +7,44 @@ printLog () {
 
 lic=$'
 o-----------------------------------------------------------o
-| upd-1.0 (github.com/macardosa/upd.git)                    |
-| MIT License Copyright (c) 2021 Manuel Alejandro Cardosa   |
+| updb-1.0 (github.com/macardosa/updb.git)                  |
+| MIT License Copyright (c) 2022 Manuel Alejandro Cardosa   |
 *-----------------------------------------------------------*'
 
-help () {
-    echo "$lic"
-	echo
+usage () {
     echo "USAGE"
-    echo "      $ upd init"
-    echo "      $ upd add user@address:/path/to/dir as remote1"
-    echo "      $ upd list"
-    echo "      $ upd push"
-    echo "      $ upd pull remote_alias"
-    echo "      $ upd forget remote1_alias"
-    echo "      $ upd rename alias new_alias"
-    echo "      $ upd restore"
-    echo "      $ upd diff"
-    echo "      $ upd clean alias"
+    echo "      $ updb init"
+    echo "      $ updb add user@address:/path/to/dir as remote1"
+    echo "      $ updb list"
+    echo "      $ updb push"
+    echo "      $ updb pull remote_alias"
+    echo "      $ updb fetch remote_alias"
+    echo "      $ updb forget remote1_alias"
+    echo "      $ updb rename alias new_alias"
+    echo "      $ updb restore"
+    echo "      $ updb diff"
+    echo "      $ updb clean alias"
+    echo "      $ updb help [command]"
+}
+
+help () {
+  echo "$lic"
+  echo
+  if [ -z $1 ]; then
+    usage
+  else
+    usage | grep $1
+  fi
 }
 
 if [ "${#@}" -lt 1 ]; then
-	help
+	echo "$lic"
+  echo
+elif [ "$1" == "help" ]; then
+  help $2
 elif [ "$1" == "init" ]; then
     if [ -f ".updb.conf" ] && [ -s ".updb.conf" ]; then
-        echo "This directory has been previously initialized. Run \"upd list\" to"\
+        echo "This directory has been previously initialized. Run \"updb list\" to"\
             "see remote backups in use" 
     else
         echo "origin -> $PWD" > .updb.conf
@@ -42,8 +55,8 @@ elif [ "$1" == "init" ]; then
     fi
 elif [ "$1" == "list" ]; then
 	if ! [ -f .updb.conf ]; then
-		printLog "Warning :: UPD config file not found !!"
-		echo "You have two options either exit and run \"upd init\" and redefine your repositories or restore previous configuration if available running \"upd restore\"."
+		printLog "Warning :: UPDB config file not found !!"
+		echo "You have two options either exit and run \"updb init\" and redefine your repositories or restore previous configuration if available running \"updb restore\"."
 	else
 		cat .updb.conf | sed 's/->/is/g'
 	fi
@@ -73,7 +86,7 @@ elif [ ! -f ".updb.conf" ]; then
     echo "This directory has not been initialized."
 elif [ "$1" == "add" ]; then
     if [ "${#@}" -lt 3 ]; then
-        echo "Insufficient arguments for this command. See \"upd help add\"."
+        echo "Insufficient arguments for this command. See \"updb help add\"."
     else
         address=$3
         name=$2
@@ -88,7 +101,7 @@ elif [ "$1" == "add" ]; then
     fi
 elif [ "$1" == "forget" ]; then
     if [ "${#@}" -lt 2 ]; then
-        echo "Insufficient arguments for this command. See \"upd help forget\"."
+        echo "Insufficient arguments for this command. See \"updb help forget\"."
     else
         if [ "$2" == "all" ]; then
 			cp .updb.conf .updb.conf.prev
@@ -100,7 +113,7 @@ elif [ "$1" == "forget" ]; then
             do
                 query=$(grep -w $name .updb.conf)
                 if [ -z "$query" ]; then
-                    echo "$name is not defined. See \"upd list\"."
+                    echo "$name is not defined. See \"updb list\"."
                 else
                     cp .updb.conf .updb.conf.prev
                     grep -w -v $name .updb.conf.prev > .updb.conf
@@ -123,7 +136,7 @@ elif [ "$1" == "push" ]; then
     done
 elif [ "$1" == "fetch" ]; then
     if [ ${#@} -lt 2 ]; then
-        echo "Insufficient arguments for this command. See \"upd help fetch\"."
+        echo "Insufficient arguments for this command. See \"updp help fetch\"."
     else
         name=$2
         repo=$(grep -w $name .updb.conf | awk -F '->' '{ print $2 }')
@@ -141,7 +154,7 @@ elif [ "$1" == "fetch" ]; then
     fi
 elif [ "$1" == "pull" ]; then
     if [ ${#@} -lt 2 ]; then
-        echo "Insufficient arguments for this command. See \"upd help pull\"."
+        echo "Insufficient arguments for this command. See \"updb help pull\"."
     else
         name=$2
         repo=$(grep -w $name .updb.conf | awk -F '->' '{ print $2 }')
@@ -159,7 +172,7 @@ elif [ "$1" == "pull" ]; then
     fi
 elif [ "$1" == "edit" ]; then
     if [ ${#@} -lt 2 ]; then
-        echo "Insufficient arguments for this command. See \"upd help edit\"."
+        echo "Insufficient arguments for this command. See \"updb help edit\"."
 	else
 		name=$(grep -w $2 .updb.conf | awk -F '->' '{ gsub(/ /,"", $1); print $1 }')
 		if [ "$name" != "$2" ]; then
@@ -177,7 +190,7 @@ elif [ "$1" == "edit" ]; then
 	fi
 elif [ "$1" == "rename" ]; then
     if [ ${#@} -lt 3 ]; then
-        echo "Insufficient arguments for this command. See \"upd help rename\"."
+        echo "Insufficient arguments for this command. See \"updb help rename\"."
 	else
 		name=$(grep -w $2 .updb.conf | awk -F '->' '{ gsub(/ /,"", $1); print $1 }')
 		if [ "$name" != "$2" ]; then
@@ -193,7 +206,7 @@ elif [ "$1" == "rename" ]; then
 	fi
 elif [ "$1" == "clean" ]; then
     if [ ${#@} -lt 2 ]; then
-        echo "Insufficient arguments for this command. See \"upd help clean\"."
+        echo "Insufficient arguments for this command. See \"updb help clean\"."
     else
         mkdir .empty
         if [ "$2" == "all" ]; then
@@ -227,7 +240,7 @@ elif [ "$1" == "clean" ]; then
     fi
 elif [ "$1" == "diff" ]; then
     if [ ${#@} -lt 2 ]; then
-        echo "Insufficient arguments for this command. See \"upd help diff\"."
+        echo "Insufficient arguments for this command. See \"updb help diff\"."
     else
 		name=$(grep -w $2 .updb.conf | awk -F '->' '{ gsub(/ /,"", $1); print $1 }')
 		repo=$(grep -w $2 .updb.conf | awk -F '->' '{ gsub(/ /,"", $2); print $2 }')
